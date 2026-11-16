@@ -1,37 +1,33 @@
 /*
-  POC ONLY — telemetry-integration branch. Optional reflective bridge to the telemetry plugin:
-  when the plugin artifact is present, calls flow; when absent, everything is a no-op.
-  No compile-time dependency of CampaignClassic on the telemetry SDK.
+  Copyright 2026 Adobe. All rights reserved.
+  This file is licensed to you under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License. You may obtain a copy
+  of the License at http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software distributed under
+  the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+  OF ANY KIND, either express or implied. See the License for the specific language
+  governing permissions and limitations under the License.
 */
+
 package com.adobe.marketing.mobile;
 
-import java.lang.reflect.Method;
+import com.adobe.marketing.mobile.telemetrybridge.TelemetryBridge;
 
-/** Optional bridge from CampaignClassic to the telemetry plugin's public API. */
+/** Direct telemetry for rejected calls which never dispatch an EventHub event. */
 final class CampaignClassicTelemetryBridge {
-    private static final String TELEMETRY_CLASS = "com.adobe.marketing.mobile.telemetry.Telemetry";
     private static final String PRODUCER = "com.adobe.campaignclassic";
 
     private CampaignClassicTelemetryBridge() {}
 
     static String operationStarted(final String eventName) {
-        try {
-            final Class<?> telemetry = Class.forName(TELEMETRY_CLASS);
-            final Method m = telemetry.getMethod("operationStarted", String.class, String.class, String.class);
-            return (String) m.invoke(null, PRODUCER, eventName, "directHook");
-        } catch (Throwable t) {
-            return null; // plugin absent or disabled — business path unaffected
-        }
+        return TelemetryBridge.operationStarted(PRODUCER, eventName);
     }
 
-    static void operationCompleted(final String operationId, final String eventName,
-                                   final String outcome, final String meaning) {
-        if (operationId == null) return;
-        try {
-            final Class<?> telemetry = Class.forName(TELEMETRY_CLASS);
-            final Method m = telemetry.getMethod("operationCompleted",
-                    String.class, String.class, String.class, String.class, String.class, String.class);
-            m.invoke(null, operationId, PRODUCER, eventName, outcome, meaning, "directHook");
-        } catch (Throwable ignored) { }
+    static void operationCompleted(
+            final String operationId,
+            final String eventName,
+            final String outcome,
+            final String meaning) {
+        TelemetryBridge.operationCompleted(operationId, PRODUCER, eventName, outcome, meaning);
     }
 }

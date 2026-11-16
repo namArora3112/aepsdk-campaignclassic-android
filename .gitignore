@@ -100,3 +100,4 @@ lint/tmp/
 .idea
 .vscode
 .DS_Store
+.scout/

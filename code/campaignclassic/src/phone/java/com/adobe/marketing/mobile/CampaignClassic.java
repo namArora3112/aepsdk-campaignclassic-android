@@ -64,9 +64,9 @@ public class CampaignClassic {
             @NonNull final String token,
             final String userKey,
             final Map<String, Object> additionalParams) {
-        final String telemetryOp =
-                CampaignClassicTelemetryBridge.operationStarted("campaign.registerDevice");
         if (StringUtils.isNullOrEmpty(token)) {
+            final String telemetryOp =
+                    CampaignClassicTelemetryBridge.operationStarted("campaign.registerDevice");
             Log.error(
                     LOG_TAG,
                     SELF_TAG,
@@ -91,8 +91,6 @@ public class CampaignClassic {
                         .build();
 
         MobileCore.dispatchEvent(event);
-        CampaignClassicTelemetryBridge.operationCompleted(
-                telemetryOp, "campaign.registerDevice", "dispatched", "hub request event dispatched");
     }
 
     /**
@@ -106,16 +104,20 @@ public class CampaignClassic {
      *     received in the message payload
      */
     public static void trackNotificationReceive(@NonNull final Map<String, String> trackInfo) {
-        final String telemetryOp =
-                CampaignClassicTelemetryBridge.operationStarted("campaign.pushTracking.received");
         if (trackInfo == null || trackInfo.isEmpty()) {
+            final String telemetryOp =
+                    CampaignClassicTelemetryBridge.operationStarted(
+                            "campaign.pushTracking.received");
             Log.error(
                     LOG_TAG,
                     SELF_TAG,
                     "Failed to track notification receive for CampaignClassic (%s)",
                     NULL_TRACK_INFO_MESSAGE);
             CampaignClassicTelemetryBridge.operationCompleted(
-                    telemetryOp, "campaign.pushTracking.received", "rejected", NULL_TRACK_INFO_MESSAGE);
+                    telemetryOp,
+                    "campaign.pushTracking.received",
+                    "rejected",
+                    NULL_TRACK_INFO_MESSAGE);
             return;
         }
 
@@ -131,8 +133,6 @@ public class CampaignClassic {
                         .setEventData(eventData)
                         .build();
         MobileCore.dispatchEvent(event);
-        CampaignClassicTelemetryBridge.operationCompleted(
-                telemetryOp, "campaign.registerDevice", "dispatched", "hub request event dispatched");
     }
 
     /**
@@ -146,16 +146,20 @@ public class CampaignClassic {
      *     received in the message payload
      */
     public static void trackNotificationClick(@NonNull final Map<String, String> trackInfo) {
-        final String telemetryOp =
-                CampaignClassicTelemetryBridge.operationStarted("campaign.pushTracking.clicked");
         if (trackInfo == null || trackInfo.isEmpty()) {
+            final String telemetryOp =
+                    CampaignClassicTelemetryBridge.operationStarted(
+                            "campaign.pushTracking.clicked");
             Log.error(
                     LOG_TAG,
                     SELF_TAG,
                     "Failed to track notification click for CampaignClassic (%s)",
                     NULL_TRACK_INFO_MESSAGE);
             CampaignClassicTelemetryBridge.operationCompleted(
-                    telemetryOp, "campaign.pushTracking.clicked", "rejected", NULL_TRACK_INFO_MESSAGE);
+                    telemetryOp,
+                    "campaign.pushTracking.clicked",
+                    "rejected",
+                    NULL_TRACK_INFO_MESSAGE);
             return;
         }
 
@@ -171,7 +175,5 @@ public class CampaignClassic {
                         .setEventData(eventData)
                         .build();
         MobileCore.dispatchEvent(event);
-        CampaignClassicTelemetryBridge.operationCompleted(
-                telemetryOp, "campaign.pushTracking.clicked", "dispatched", "hub request event dispatched");
     }
 }

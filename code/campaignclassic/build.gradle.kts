@@ -13,7 +13,7 @@ plugins {
     id("aep-library")
 }
 
-val mavenCoreVersion: String by project
+val mavenCoreVersion = "3.11.0-telemetry-typed-poc"
 val mavenUILibraryVersion: String by project
 
 aepLibrary {
