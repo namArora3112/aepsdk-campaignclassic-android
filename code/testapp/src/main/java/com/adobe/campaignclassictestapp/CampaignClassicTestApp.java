@@ -22,6 +22,8 @@ public class CampaignClassicTestApp extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		// POC: customer-install path — telemetry attaches before any Core call (Q2/Q5)
+		com.adobe.marketing.mobile.telemetry.Telemetry.install(this);
 		MobileCore.setApplication(this);
 		MobileCore.setLogLevel(LoggingMode.VERBOSE);
 
@@ -35,6 +37,10 @@ public class CampaignClassicTestApp extends Application {
 				@Override
 				public void call(Object o) {
 					MobileCore.configureWithAppID("94f571f308d5/229d013e3c02/launch-abd54ef414e2-development");
+					// POC: hub projection — campaign request events map to the telemetry catalog
+					com.adobe.marketing.mobile.telemetry.Telemetry.registerEventHubProjection(
+							EventType.CAMPAIGN, EventSource.REQUEST_CONTENT,
+							"com.adobe.campaignclassic", "campaign.requestContent");
 					// listen for campaign response event
 					MobileCore.registerEventListener(EventType.CAMPAIGN, EventSource.RESPONSE_CONTENT, new AdobeCallback<Event>() {
 						@Override

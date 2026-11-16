@@ -56,6 +56,53 @@ public class MainActivity extends AppCompatActivity {
 				});
 
 		askNotificationPermission();
+		addTelemetryPanel();
+	}
+
+	// POC: two-mode telemetry panel (telemetry-integration branch)
+	private TextView telemetryStats;
+	private void addTelemetryPanel() {
+		androidx.constraintlayout.widget.ConstraintLayout root = (androidx.constraintlayout.widget.ConstraintLayout) ((android.view.ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
+		android.widget.LinearLayout panel = new android.widget.LinearLayout(this);
+		panel.setOrientation(android.widget.LinearLayout.VERTICAL);
+		androidx.constraintlayout.widget.ConstraintLayout.LayoutParams lp =
+				new androidx.constraintlayout.widget.ConstraintLayout.LayoutParams(
+						androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT,
+						androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT);
+		lp.bottomToBottom = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID;
+		panel.setLayoutParams(lp);
+		panel.setBackgroundColor(0xFFEEEEEE);
+
+		android.widget.Button hubBtn = new android.widget.Button(this);
+		hubBtn.setText("Telemetry via EventHub (valid registerDevice)");
+		hubBtn.setOnClickListener(v -> {
+			// valid call -> hub event dispatched -> projection maps it (no direct call here)
+			CampaignClassic.registerDevice("poc-token-hub", "poc-user", null);
+			renderTelemetryStats();
+		});
+
+		android.widget.Button directBtn = new android.widget.Button(this);
+		directBtn.setText("Telemetry via exposed functions (empty token -> rejected)");
+		directBtn.setOnClickListener(v -> {
+			// invalid call -> NO hub event exists; only the direct hook records the rejection
+			CampaignClassic.registerDevice("", "poc-user", null);
+			renderTelemetryStats();
+		});
+
+		telemetryStats = new TextView(this);
+		panel.addView(hubBtn);
+		panel.addView(directBtn);
+		panel.addView(telemetryStats);
+		root.addView(panel);
+		renderTelemetryStats();
+	}
+
+	private void renderTelemetryStats() {
+		StringBuilder sb = new StringBuilder("== Telemetry ==");
+		for (Map.Entry<String, ?> e : com.adobe.marketing.mobile.telemetry.Telemetry.stats().entrySet()) {
+			sb.append("\n").append(e.getKey()).append(": ").append(e.getValue());
+		}
+		telemetryStats.setText(sb.toString());
 	}
 
 	@Override

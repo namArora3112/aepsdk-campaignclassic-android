@@ -29,4 +29,7 @@ dependencyResolutionManagement {
  }
 }
 include ':campaignclassic', ':testapp'
+
+// POC: composite-substitute the telemetry plugin from the sibling repo (telemetry-integration branch)
+
 rootProject.name = "aepsdk-campaignclassic-android"

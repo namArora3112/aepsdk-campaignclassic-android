@@ -39,6 +39,7 @@ android {
 
 dependencies {
     implementation(project(":campaignclassic"))
+    implementation("com.adobe.marketing.mobile:telemetry:0.1.0-poc")
     implementation("com.adobe.marketing.mobile:core:$mavenCoreVersion")
     implementation("com.adobe.marketing.mobile:lifecycle:$mavenLifecycleVersion")
     implementation("com.adobe.marketing.mobile:assurance:3.0.0")
